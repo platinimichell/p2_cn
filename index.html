@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Alunos</title>
+
+    <style>
+        /* ======== RESET ======== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #4f46e5, #3b82f6);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* ======== CONTAINER ======== */
+        .card {
+            width: 100%;
+            max-width: 430px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 30px 35px;
+            border-radius: 15px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            color: white;
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 26px;
+            font-weight: 600;
+        }
+
+        /* ======== INPUTS ======== */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+            font-size: 15px;
+            margin-top: 5px;
+            background: rgba(255, 255, 255, 0.85);
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: none;
+        }
+
+        /* ======== BUTTON ======== */
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            background: #10b981;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: #059669;
+            transform: scale(1.03);
+        }
+
+        /* ======== FEEDBACK ======== */
+        .alert {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+
+        .success {
+            background: #bbf7d0;
+            color: #065f46;
+        }
+
+        .error {
+            background: #fecaca;
+            color: #7f1d1d;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Cadastro de Aluno</h2>
+
+    <form id="formAluno">
+        <div class="form-group">
+            <label>Nome Completo</label>
+            <input type="text" id="nome_completo" required maxlength="150">
+        </div>
+
+        <div class="form-group">
+            <label>Usuário de Acesso</label>
+            <input type="text" id="usuario_acesso" required maxlength="50">
+        </div>
+
+        <div class="form-group">
+            <label>Senha</label>
+            <input type="password" id="senha" required minlength="6">
+        </div>
+
+        <div class="form-group">
+            <label>E-mail</label>
+            <input type="email" id="email_aluno" required maxlength="120">
+        </div>
+
+        <div class="form-group">
+            <label>Observação (opcional)</label>
+            <textarea id="observacao" maxlength="500"></textarea>
+        </div>
+
+        <button type="submit">Cadastrar</button>
+    </form>
+
+    <div id="alert" class="alert"></div>
+</div>
+
+
+<script>
+document.getElementById("formAluno").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const dados = {
+        nome_completo: document.getElementById("nome_completo").value.trim(),
+        usuario_acesso: document.getElementById("usuario_acesso").value.trim(),
+        senha: document.getElementById("senha").value,
+        email_aluno: document.getElementById("email_aluno").value.trim(),
+        observacao: document.getElementById("observacao").value.trim(),
+    };
+
+    const alertBox = document.getElementById("alert");
+
+    try {
+        const res = await fetch("http://localhost:3000/api/alunos", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(dados)
+        });
+
+        const json = await res.json();
+
+        alertBox.style.display = "block";
+        alertBox.textContent = json.message;
+
+        if (res.ok) {
+            alertBox.className = "alert success";
+            document.getElementById("formAluno").reset();
+        } else {
+            alertBox.className = "alert error";
+        }
+
+    } catch (err) {
+        alertBox.style.display = "block";
+        alertBox.className = "alert error";
+        alertBox.textContent = "Erro ao conectar ao servidor.";
+    }
+});
+</script>
+
+</body>
+</html>
