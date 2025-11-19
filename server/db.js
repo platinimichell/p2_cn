@@ -1,13 +1,12 @@
 const mysql = require("mysql2/promise");
+require("dotenv").config(); // Carrega as variáveis do .env
 
 const pool = mysql.createPool({
-    host: "serverdbp2.mysql.database.azure.com",
-    user: "useradmin",
-    password: "admin@123",
-    database: "db_Michell",
-    ssl: {
-        rejectUnauthorized: false
-    },
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME,
+    ssl: { rejectUnauthorized: false },
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
