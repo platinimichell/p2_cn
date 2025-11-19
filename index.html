@@ -163,7 +163,7 @@ document.getElementById("formAluno").addEventListener("submit", async (e) => {
     const alertBox = document.getElementById("alert");
 
     try {
-        const res = await fetch("http://localhost:3000/api/alunos", {
+        const res = await fetch("api/alunos", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(dados)
